@@ -3,8 +3,11 @@
 import hashlib
 import json
 
+from textwrap import dedent
 from time import time
 from uuid import uuid4
+
+from flask import Flask, jsonify
 
 
 class Blockchain(object):
@@ -76,3 +79,37 @@ class Blockchain(object):
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         return guess_hash[:4] == "0000"
+
+
+# ノードを作る
+app = Flask(__name__)
+
+# このノードのグローバルにユニークなアドレスを作る
+node_identifire = str(uuid4()).replace('-', '')
+
+# ブロックチェーンクラスをインスタンス化する
+blockchain = Blockchain()
+
+# メソッドはPOSTで/transactions/newエンドポイントを作る、メソッドはPOSTなのでデータを送信する
+@app.route('/transactions/new', methods=['POST'])
+def new_transactions():
+    return '新しいトランザクションを追加します'
+
+# メソッドはGETで/mineエンドポイントを作る
+@app.route('/mine', methods=['GET'])
+def mine():
+    return '新しいブロックを採掘します'
+
+# メソッドはGETで、フルのブロックチェーンをリターンする/chainエンドポイントを作る
+@app.route('/chain', methods=['GET'])
+def full_chain():
+    responce = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+    }
+    return jsonify(responce), 200
+
+
+# port5000でサーバーを起動する
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
