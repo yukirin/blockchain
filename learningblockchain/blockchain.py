@@ -222,7 +222,7 @@ def register_node():
     values = request.get_json()
     nodes = values.get('nodes')
     if nodes is None:
-        return "Error: 有効ではないノードのリスおｔです", 400
+        return "Error: 有効ではないノードのリストです", 400
 
     for node in nodes:
         blockchain.register_node(node)
@@ -251,7 +251,7 @@ def consensus():
 
     return jsonify(response), 200
 
-    
+
 # port5000でサーバーを起動する
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
